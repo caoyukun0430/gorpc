@@ -1,30 +1,16 @@
-# 7 Days Go RPC from Scratch
+package main
 
-Go RPC studies and simplifies the [net/rpc](https://pkg.go.dev/net/rpc) implementation, and extends with the features:
-* protocol exchange
-* registry
-* service discovery
-* load balancing
-* timeout processing
+import (
+	"encoding/json"
+	"fmt"
+	"gorpc"
+	"gorpc/codec"
+	"log"
+	"net"
+	"time"
+)
 
-## Day 1 - Encode/decode and RPC server implementation
-
-What we learnt?
-
-1. Implment our own Goc codec instance based on Go encoding/gob package, which is designed to efficiently encode
-and decode Go data structures in binary format. Our codec has mainly four basic methods, readHeader, readBody
-write and close.
-
-2. Regulate the communication message format, currently the coding type is only thing needs to be negoiate
-in the message. We regulate the message heads begins with the coding option, followed by multiple requests
-in one connection.
-
-3. The way messages are handled in the connection/codec are three steps: first, read the request header and
-body from the connection. A endless loop is used to continously read requests until the client closes.
-Second, handle request and send responses. Note, response should be sent with exclusive lock because
-we need to make sure response won't mix up in the messages so that the peer client can decode.
-
-```go
+// addr chan string declares a channel that can send and receive string values.
 func startServer(addr chan string) {
 	// pick a free port
 	l, err := net.Listen("tcp", ":0")
@@ -61,9 +47,9 @@ func main() {
 		_ = cc.Write(h, fmt.Sprintf("geerpc req %d", h.Seq))
 		// receive response from server
 		_ = cc.ReadHeader(h)
+		// read and print body also gives the time for the requests to complete
 		var reply string
 		_ = cc.ReadBody(&reply)
 		log.Println("reply:", reply)
 	}
 }
-```
