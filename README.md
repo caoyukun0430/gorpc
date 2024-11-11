@@ -67,3 +67,20 @@ func main() {
 	}
 }
 ```
+
+
+## Day 2 - Asynchronous and Concurrent Client Implementation
+
+What we learnt?
+
+1. go startServer(addr) starts the server, and the server starts listening to the port
+
+2. geerpc.Dial("tcp", <-addr), the client creates a server on the corresponding port, and creates a corresponding client to call and receive the response
+
+3. Dial will create a new client and pass options to the server, then create a corresponding Codec according to the configuration of options, and the client starts to call receive to receive information async.
+
+4. In the for loop, the client calls SyncCall to send information. After call assembles the parameters through go, send sends the information. During the send process, the client sends the information to the server through write func
+
+5. After the server processes and returns the information in serveCodec, the client's receive go routine will receive the information, and the reply will be read at this time. The corresponding call.Done receives the variable, which means the execution is over
+
+6. After the execution is over, reply is passed to call.Reply, bound to the reply string in the main function, and the result is printed out.
