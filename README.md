@@ -151,3 +151,14 @@ func main() {
 	wg.Wait()
 }
 ```
+
+## Day 4 - Timeout handling
+
+1. During the RPC calling duration, timeout needs to be added for both client and server, in three parts for now:
+	a. when the client creates the connection timeout
+	b. when the client synchronize waiting for the call done signal returned timeout (including sending msg, waiting the request being handled and receiving response)
+	c. when the server handles request timeout
+
+2. The three timeout machnism replies on go rountine and signal channel, and differs a bit.
+
+3. The client connection timeout relies on dial.WithTimeout function. The client wait sync call timeout relies on custom context function like context.WithTimeout. The server handling request timeout relies on signal channel.
