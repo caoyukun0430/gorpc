@@ -331,7 +331,7 @@ func (client *Client) SendCall(serviceMethod string, args, reply interface{}, do
 // 	return call.Error
 // }
 
-func (client *Client) syncCall(ctx context.Context, serviceMethod string, args, reply interface{}) error {
+func (client *Client) SyncCall(ctx context.Context, serviceMethod string, args, reply interface{}) error {
 	call := client.SendCall(serviceMethod, args, reply, make(chan *Call, 1))
 	select {
 	case <-ctx.Done():

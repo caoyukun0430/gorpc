@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"gorpc"
 	"log"
 	"net"
@@ -52,7 +53,7 @@ func main() {
 			defer wg.Done()
 			args := &Args{Num1: i, Num2: i * i}
 			var reply int
-			if err := client.SyncCall("Foo.Sum", args, &reply); err != nil {
+			if err := client.SyncCall(context.Background(), "Foo.Sum", args, &reply); err != nil {
 				log.Fatal("call Foo.Sum error:", err)
 			}
 			log.Printf("%d + %d = %d", args.Num1, args.Num2, reply)

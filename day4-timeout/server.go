@@ -233,6 +233,7 @@ func (server *Server) readRequest(cc codec.Codec) (*request, error) {
 // 	server.sendResponse(cc, req.header, req.replyv.Interface(), sending)
 // }
 
+// IMPORTANT to make sure sendResponse is sent only once!
 // Buffered Channels: By creating called and sent as buffered channels with a capacity of 1 (make(chan struct{}, 1)), you allow the goroutine to send to these channels without blocking, even if the main function has already timed out.
 // Non-blocking Sends: The goroutine can send to the called and sent channels without waiting for a corresponding receive operation, thus preventing a goroutine leak.
 // sent is independent from called!
