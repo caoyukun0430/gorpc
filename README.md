@@ -217,3 +217,13 @@ func main() {
 	wg.Wait()
 }
 ```
+
+## Day 6 - Load balancing support
+
+1. Create a service discovery module/interface providing following methods and support random select and round robin.
+	Refresh() error // refresh from remote registry
+	Update(servers []string) error
+	Get(mode SelectMode) (string, error)
+	GetAll() ([]string, error)
+
+2. Create xclient to be able to select discovery instance, LB method and RPC addr.
