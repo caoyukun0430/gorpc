@@ -227,3 +227,36 @@ func main() {
 	GetAll() ([]string, error)
 
 2. Create xclient to be able to select discovery instance, LB method and RPC addr.
+
+## Day 7 - Service Discovery and Registry Center
+
+1. Design a simple registry center that has timeout for registered services' liveness and can receive server heartbeat to keep them registered live.
+
+2. Registry center is implemented as a HTTP server(handler) that supports GET requests, e.g. for clients to retrieving existing alive server lists and
+POST requests for server to register it in the center and sendheart to keep alive in the center.
+
+3. Design a client able to use GET requests to retrieve the server list, and compared to day6, we no longer needs to pass in all server addr, instead
+only the register center addr is needed when init the registry discovery instance.
+
+```go
+
+func main() {
+	log.SetFlags(0)
+	registryAddr := "http://localhost:9999/_gorpc_/registry"
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go startRegistry(&wg)
+	wg.Wait()
+
+	time.Sleep(time.Second)
+	wg.Add(2)
+	go startServer(registryAddr, &wg)
+	go startServer(registryAddr, &wg)
+	wg.Wait()
+
+	time.Sleep(time.Second)
+	call(registryAddr)
+	broadcast(registryAddr)
+}
+
+```
